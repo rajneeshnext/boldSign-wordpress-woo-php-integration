@@ -1,5 +1,7 @@
 <?php
-/* Template Name: Thank You */
+/* Template Name: Thank You 
+On Woocomerce Checkout, thank you page ask customer to confirm details and sign the document.
+*/
 get_header(); ?>
 <style>
 .thank-you-page{
