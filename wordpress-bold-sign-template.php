@@ -41,11 +41,12 @@ function get_order_boldsign_link($order_key) {
     // Check if the custom field exists
     $boldsign_document = get_post_meta($order->get_id(), 'boldsign_document', true);
     $boldsign_document = "";
+	echo "<br/><br/>";
     if (!empty($boldsign_document)) {
-        echo '<br/><br/><br/><h2 class="elementor-heading-title elementor-size-default">Please complete Patient Authorization and Consent Form.</h2>';
+        //echo '<br/><br/><br/><h2 class="elementor-heading-title elementor-size-default">Please complete Patient Authorization and Consent Form.</h2>';
         return generateEmbeddedLink($boldsign_document, $order->get_billing_email());
     } else {
-        echo '<h2 class="elementor-heading-title elementor-size-default">Please complete Patient Authorization and Consent Form!</h2>';
+        //echo '<h2 class="elementor-heading-title elementor-size-default">Please complete Patient Authorization and Consent Form!</h2>';
         $boldsign_document = "";
         $order_details = [];
         // Get customer details
@@ -59,7 +60,7 @@ function get_order_boldsign_link($order_key) {
         $order_details['billing_city'] = $order->get_billing_city(); // Billing city
         $order_details['billing_country'] = $order->get_billing_country();
         $order_details['billing_postcode'] = $order->get_billing_postcode(); // Billing postcode
-        $order_details['billing_suite'] = $order->get_billing_postcode(); // Billing postcode
+        $order_details['billing_suite'] = $order->get_billing_address_2(); // Billing postcode
         $order_details['boldsign_document'] = $boldsign_document; // Billing first name
         return createDocumentLink($order_details);
     }
@@ -72,7 +73,7 @@ function createDocumentLink($billing_details){
             'email'   => $billing_details['billing_email'],
             'address' => $billing_details['billing_address_1'] . ', ' . $billing_details['billing_city'] . ', ' . $billing_details['billing_state'] . ', ' . $billing_details['billing_postcode'],
             'phone'   => $billing_details['billing_phone'],
-            //'suite'   => $billing_details['billing_suite'],
+            'suite'   => $billing_details['billing_suite'],
             'city'   => $billing_details['billing_city'],
             'zipcode'   => $billing_details['billing_postcode'],
             'state'   => $billing_details['billing_state'],
@@ -81,8 +82,8 @@ function createDocumentLink($billing_details){
         $order_id = $billing_details['order_id'];
         //echo "<pre>";
         //print_r($customer_data);exit();
-        $api_key = 'xxxx'; // Replace with your API key
-        $template_id = 'xxxx-a452-4c5e-xxxxx-6278c3f2d8e9';  // Replace with your template ID
+        $api_key = 'xxxxxxxx'; // Replace with your API key
+        $template_id = 'xxxx-a452-4c5e-xxxxx-xxxxxxx';  // Replace with your template ID
         $boldsign_api_url = 'https://api.boldsign.com/v1/template/send?templateId='.$template_id;
     
         $payload = [
@@ -263,7 +264,7 @@ function createDocumentLink($billing_details){
 function generateEmbeddedLink($documentId, $email){
     if (!empty($documentId)) {
             $boldsign_api_url = 'https://api.boldsign.com/v1/document/getEmbeddedSignLink?documentId='.$documentId.'&signerEmail='.$email;
-            $api_key = 'xxxxxxx'; // Replace with your API key
+            $api_key = 'xxxxxxxx'; // Replace with your API key
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $boldsign_api_url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
