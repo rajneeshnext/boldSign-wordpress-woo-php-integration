@@ -49,7 +49,6 @@ function get_order_boldsign_link($order_key) {
         //echo '<h2 class="elementor-heading-title elementor-size-default">Please complete Patient Authorization and Consent Form!</h2>';
         $boldsign_document = "";
         $order_details = [];
-        // Get customer details
         $order_details['order_id'] = $order_id; // Billing first name
         $order_details['billing_first_name'] = $order->get_billing_first_name(); // Billing first name
         $order_details['billing_last_name'] = $order->get_billing_last_name(); // Billing last name
