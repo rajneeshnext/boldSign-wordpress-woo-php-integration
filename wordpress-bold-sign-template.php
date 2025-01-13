@@ -40,7 +40,7 @@ function get_order_boldsign_link($order_key) {
     }
     // Check if the custom field exists
     $boldsign_document = get_post_meta($order->get_id(), 'boldsign_document', true);
-    $boldsign_document = "";
+    //$boldsign_document = "";
 	echo "<br/><br/>";
     if (!empty($boldsign_document)) {
         //echo '<br/><br/><br/><h2 class="elementor-heading-title elementor-size-default">Please complete Patient Authorization and Consent Form.</h2>';
@@ -49,17 +49,40 @@ function get_order_boldsign_link($order_key) {
         //echo '<h2 class="elementor-heading-title elementor-size-default">Please complete Patient Authorization and Consent Form!</h2>';
         $boldsign_document = "";
         $order_details = [];
+        // Get customer details
+        // $billing_details['']
+		$order_details['check_patient']  = $order->get_meta('_billing_wooccm21');
+		if( $order_details['check_patient'] == "Parent/Guardian/Legally Authorized Representative"){
+			$order_details['billing_first_name'] = $order->get_meta('_billing_wooccm22');
+			$order_details['billing_middle_name'] = $order->get_meta('_billing_wooccm23');
+			$order_details['billing_last_name'] = $order->get_meta('_billing_wooccm24');
+			$order_details['billing_dob'] = $order->get_meta('_billing_wooccm25');
+		}else{
+			$order_details['billing_first_name'] = $order->get_billing_first_name();
+			$order_details['billing_middle_name'] = $order->get_meta('_billing_wooccm11');
+        	$order_details['billing_last_name'] = $order->get_billing_last_name();
+			$order_details['billing_dob'] = '';
+		}
+		$order_details['check_patient_address']  = $order->get_meta('_billing_wooccm26');
+		if( $order_details['check_patient_address'] == "No"){
+			$order_details['billing_address_1'] = $order->get_meta('_billing_wooccm27');
+			$order_details['billing_suite'] = $order->get_meta('_billing_wooccm28');
+			$order_details['billing_city'] = $order->get_meta('_billing_wooccm29');
+			$order_details['billing_state'] = $order->get_meta('_billing_wooccm30');
+			$order_details['billing_postcode'] = $order->get_meta('_billing_wooccm31');
+			$order_details['billing_country'] = $order->get_meta('_billing_wooccm32');
+		}else{
+			$order_details['billing_address_1'] = $order->get_billing_address_1(); // Billing address 1
+			$order_details['billing_suite'] = $order->get_billing_address_2(); // Billing postcode
+			$order_details['billing_city'] = $order->get_billing_city(); // Billing city
+			$order_details['billing_state'] = $order->get_billing_state();
+			$order_details['billing_postcode'] = $order->get_billing_postcode();
+			$order_details['billing_country'] = $order->get_billing_country();			
+		}
+        $order_details['billing_phone'] = $order->get_billing_phone();
         $order_details['order_id'] = $order_id; // Billing first name
-        $order_details['billing_first_name'] = $order->get_billing_first_name(); // Billing first name
-        $order_details['billing_last_name'] = $order->get_billing_last_name(); // Billing last name
+		$order_details['billing_wooccm15']  = $order->get_meta('_billing_wooccm15');
         $order_details['billing_email'] = $order->get_billing_email();//$order->get_billing_email(); // Billing email
-        $order_details['billing_phone'] = $order->get_billing_phone(); // Billing phone
-        $order_details['billing_state'] = $order->get_billing_state();
-        $order_details['billing_address_1'] = $order->get_billing_address_1(); // Billing address 1
-        $order_details['billing_city'] = $order->get_billing_city(); // Billing city
-        $order_details['billing_country'] = $order->get_billing_country();
-        $order_details['billing_postcode'] = $order->get_billing_postcode(); // Billing postcode
-        $order_details['billing_suite'] = $order->get_billing_address_2(); // Billing postcode
         $order_details['boldsign_document'] = $boldsign_document; // Billing first name
         return createDocumentLink($order_details);
     }
@@ -68,7 +91,7 @@ function createDocumentLink($billing_details){
         $customer_data = [
             'first_name'   => $billing_details['billing_first_name'],
             'last_name'   => $billing_details['billing_last_name'],
-            'name'    => $billing_details['billing_first_name'] . ' ' . $billing_details['billing_last_name'],
+            'name'    => $billing_details['billing_first_name'] . ' ' .$billing_details['billing_middle_name'].' '. $billing_details['billing_last_name'],
             'email'   => $billing_details['billing_email'],
             'address' => $billing_details['billing_address_1'] . ', ' . $billing_details['billing_city'] . ', ' . $billing_details['billing_state'] . ', ' . $billing_details['billing_postcode'],
             'phone'   => $billing_details['billing_phone'],
@@ -103,7 +126,7 @@ function createDocumentLink($billing_details){
                         'existingFormFields' => [
                             [
                                 'id' => 'TextBox9',
-                                'value' => $customer_data['first_name'] . ' ' . $customer_data['last_name'],
+                                'value' => $customer_data['name'],
                                 'bounds' => [
                                     'x' => 100,
                                     'y' => 100,
